@@ -1,8 +1,7 @@
 import { Container, AnimatedSprite, Spritesheet} from "pixi.js";
 
-// Trạng thái
-// Cập nhật lại enum PlayerState
 enum PlayerState {
+    // Movement states
     IDLE = 'idle',
     RIGHT = 'right',
     LEFT = 'left',
@@ -11,39 +10,103 @@ enum PlayerState {
     UP_LEFT = 'up_left',
     DOWN = 'down',
     DOWN_RIGHT = 'down_right',
-    DOWN_LEFT = 'down_left'
+    DOWN_LEFT = 'down_left',
+    // Game states
+    DESTROY = 'destroy',
+    IMMUNE = 'immune',
+    LEVEL_UP = 'level_up'
 }
-// Interface cho options
+
 interface PlayerOptions {
     x?: number;
     y?: number;
     scale?: number;
     spritesheet?: Spritesheet;
+    maxHealth?: number;
+    initialLevel?: number;
 }
 
 export class Player extends Container {
-    // State hiện tại
     private currentState: PlayerState = PlayerState.IDLE;
-    // Hướng nhìn ( 1: phải, -1 trái)
     private direction: number = 1;
-    // Trạng thái di chuyển
-    // private isMoving: boolean = false;
-    // private sprite: AnimatedSprite | null = null;
     private animations: Map<PlayerState, AnimatedSprite> = new Map();
+    
+    // New properties
+    private health: number;
+    private maxHealth: number;
+    private level: number;
+    private isImmune: boolean = false;
+    private immunityTimer: number = 0;
+    private readonly IMMUNITY_DURATION: number = 2000; // 2 seconds
+    private readonly DESTROY_DURATION: number = 1000; // 1 second
 
     constructor(options: PlayerOptions = {}) {
         super();
-
-        // vị trí , tỉ lệ
         this.x = options.x || 0;
         this.y = options.y || 0;
         this.scale.set(options.scale || 1);
+        
+        // Initialize health and level
+        this.maxHealth = options.maxHealth || 3;
+        this.health = this.maxHealth;
+        this.level = options.initialLevel || 1;
 
-        // Lưu trữ tài nguyên
         if (options.spritesheet) {
             this.initialize(options.spritesheet);
         }
     }
+
+    // Add new methods for game logic
+    takeDamage(): void {
+        if (this.isImmune) return;
+        
+        this.health--;
+        this.level = Math.max(1, this.level - 1); // Decrease level but not below 1
+        
+        if (this.health > 0) {
+            this.setState(PlayerState.DESTROY);
+            setTimeout(() => {
+                this.setState(PlayerState.IMMUNE);
+                this.isImmune = true;
+                this.immunityTimer = setTimeout(() => {
+                    this.isImmune = false;
+                    this.setState(PlayerState.IDLE);
+                }, this.IMMUNITY_DURATION);
+            }, this.DESTROY_DURATION);
+        }
+    }
+
+    heal(): void {
+        this.health = Math.min(this.health + 1, this.maxHealth);
+    }
+
+    levelUp(): void {
+        this.level++;
+        this.setState(PlayerState.LEVEL_UP);
+        setTimeout(() => this.setState(PlayerState.IDLE), 500);
+    }
+
+    getCurrentLevel(): number {
+        return this.level;
+    }
+
+    getHealth(): number {
+        return this.health;
+    }
+
+    isDestroyed(): boolean {
+        return this.health <= 0;
+    }
+
+    // Override destroy method to clean up timers
+    destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean; }): void {
+        clearTimeout(this.immunityTimer);
+        for (const anim of this.animations.values()) {
+            anim.stop();
+        }
+        super.destroy(options);
+    }
+
     // LOAD DATASHEET
     initialize(spritesheet: Spritesheet): void {
         // Create default texture array for each state
@@ -88,12 +151,12 @@ export class Player extends Container {
     }
 
     //dọn dẹp khi không dùng
-    destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean; }): void {
-        for (const anim of this.animations.values()) {
-            anim.stop();
-        }
-        super.destroy(options);
-    }
+    // destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean; }): void {
+    //     for (const anim of this.animations.values()) {
+    //         anim.stop();
+    //     }
+    //     super.destroy(options);
+    // }
 
     // Thêm các phương thức di chuyển
     moveRight(): void {
