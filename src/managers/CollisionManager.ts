@@ -11,7 +11,7 @@ export class CollisionManager extends Container {
     private readonly ENEMY_RADIUS = 20; // Bán kính va chạm của kẻ địch
     private readonly BOSS_RADIUS = 40; // Bán kính va chạm của boss
     private readonly BULLET_RADIUS = 5; // Bán kính va chạm của đạn
-    private readonly ITEM_RADIUS = 15; // Bán kính va chạm của item
+    //private readonly ITEM_RADIUS = 15; // Bán kính va chạm của item
     
     constructor(player: Player) {
         super();

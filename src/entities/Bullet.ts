@@ -37,7 +37,7 @@ export class Bullet extends Container {
     private isDestroyed: boolean = false;
     private hitbox: { width: number; height: number; };
     private readonly HITBOX_PADDING: number = 2; // Padding cho hitbox
-    private readonly MULTI_BULLET_ANGLE: number = 15; // Góc giữa các đạn (độ)
+    //private readonly MULTI_BULLET_ANGLE: number = 15; // Góc giữa các đạn (độ)
     
     constructor(options: BulletOptions = {}) {
         super();

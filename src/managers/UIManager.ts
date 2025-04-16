@@ -1,6 +1,6 @@
 import { Container, Text, Graphics, Sprite, Texture, Assets } from "pixi.js";
 import { Player } from "../entities/Player";
-import { Boss } from "../entities/Boss";
+// import { Boss } from "../entities/Boss";
 
 export class UIManager {
     private container: Container;
@@ -13,7 +13,7 @@ export class UIManager {
     private bossHealthBar: Graphics | null = null;
     private heartSprites: Sprite[] = [];
     private heartTexture: Texture | null = null;
-    private score: number = 0;
+    // private score: number = 0;
     private readonly BASE_URL = import.meta.env.BASE_URL || '';
     
     constructor(container: Container, player: Player) {
@@ -111,7 +111,7 @@ export class UIManager {
         this.player.on('levelChanged', this.updatePlayerLevel.bind(this));
         
         // Lắng nghe sự kiện từ game
-        this.container.on('scoreChanged', this.updateScore.bind(this));
+        // this.container.on('scoreChanged', this.updateScore.bind(this));
         this.container.on('levelChanged', this.updateGameLevel.bind(this));
         this.container.on('skillCooldown', this.updateSkillCooldown.bind(this));
     }
@@ -138,10 +138,10 @@ export class UIManager {
     }
 
     // Cập nhật điểm số
-    updateScore(score: number): void {
-        this.score = score;
-        this.scoreText.text = `Score: ${score}`;
-    }
+    // updateScore(score: number): void {
+    //     this.score = score;
+    //     this.scoreText.text = `Score: ${score}`;
+    // }
 
     // Cập nhật level game
     updateGameLevel(level: number): void {

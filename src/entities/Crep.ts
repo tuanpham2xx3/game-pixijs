@@ -111,10 +111,7 @@ export class Crep extends Enemy {
     }
     
     // Cập nhật hướng nhìn của Crep
-    private updateDirection(dx: number, dy: number): void {
-        // Tính góc di chuyển
-        const angle = Math.atan2(dy, dx);
-        
+    private updateDirection(dx: number, _dy: number): void {
         // Cập nhật scale.x để flip sprite theo hướng di chuyển
         this.scale.x = Math.abs(this.scale.x) * (dx > 0 ? 1 : -1);
     }

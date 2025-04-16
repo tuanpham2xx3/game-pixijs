@@ -1,4 +1,4 @@
-import { Container, Sprite, Texture, Assets } from "pixi.js";
+import { Container, Sprite, Texture } from "pixi.js";
 
 export enum ItemType {
     HEART = 'heart',

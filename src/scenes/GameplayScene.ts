@@ -15,8 +15,8 @@ export class GameplayScene extends BaseScene {
         // Khởi tạo game
         await this.game.init();
         
-        // Thêm stage của game vào container của scene
-        this.container.addChild(this.game.getStage());
+        // Thêm container của game vào container của scene
+        this.container.addChild(this.game.getContainer());
         
         console.log('Gameplay Scene tải xong.');
     }

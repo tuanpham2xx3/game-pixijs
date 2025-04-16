@@ -2,6 +2,18 @@ import { Container } from "pixi.js";
 import { Crep } from "../entities/Crep";
 import { Boss } from "../entities/Boss";
 import { Enemy } from "../entities/Enemy";
+import { Item } from "../entities/Item";
+
+interface SkillData {
+    type: string;
+    damage: number;
+    range: number;
+}
+
+interface BossDamageData {
+    currentHp: number;
+    maxHp: number;
+}
 
 interface LevelData {
     level: number;
@@ -134,7 +146,7 @@ export class LevelManager {
             crep.moveToTarget();
             
             // Xử lý sự kiện khi crep bị tiêu diệt
-            crep.on('destroyed', (event: any) => {
+            crep.on('destroyed', (event) => {
                 if (event instanceof Enemy) {
                     this.removeEnemy(event);
                     this.checkLevelComplete();
@@ -142,7 +154,7 @@ export class LevelManager {
             });
             
             // Xử lý sự kiện khi crep rơi item
-            crep.on('dropItem', (item: any) => {
+            crep.on('dropItem', (item: Item) => {
                 this.emit('itemDropped', item);
             });
         }
@@ -163,21 +175,21 @@ export class LevelManager {
             this.enemies.push(this.boss);
             
             // Xử lý sự kiện khi boss bị tiêu diệt
-            this.boss.on('destroyed', (event: any) => {
-                if (event instanceof Enemy) {
-                    this.removeEnemy(event);
+            this.boss.on('destroyed', () => {
+                if (this.boss) {
+                    this.removeEnemy(this.boss);
                     this.boss = null;
                     this.checkLevelComplete();
                 }
             });
             
             // Xử lý sự kiện khi boss sử dụng skill
-            this.boss.on('bossSkill', (skillData: any) => {
+            this.boss.on('bossSkill', (skillData: SkillData) => {
                 this.emit('bossSkill', skillData);
             });
             
             // Xử lý sự kiện khi boss bị tấn công
-            this.boss.on('bossDamaged', (data: any) => {
+            this.boss.on('bossDamaged', (data: BossDamageData) => {
                 this.emit('bossDamaged', data);
             });
         }
@@ -260,7 +272,7 @@ export class LevelManager {
     }
     
     // Phương thức emit sự kiện
-    private emit(event: string, data?: any): void {
+    private emit(event: string, data?: unknown): void {
         // Sử dụng custom event để gửi sự kiện
         const customEvent = new CustomEvent(event, { detail: data });
         document.dispatchEvent(customEvent);

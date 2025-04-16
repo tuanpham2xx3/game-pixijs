@@ -3,6 +3,12 @@ import { Player } from "../entities/Player";
 import { Enemy } from "../entities/Enemy";
 import { Boss } from "../entities/Boss";
 
+interface SkillEvents {
+    playerSkillUsed: number; // cooldown time
+    skillReady: void;
+    skillCooldownUpdate: number; // remaining cooldown time
+}
+
 export class SkillManager {
     private container: Container;
     private player: Player;
@@ -214,7 +220,7 @@ export class SkillManager {
     }
     
     // Phương thức emit sự kiện
-    private emit(event: string, data?: any): void {
+    private emit<K extends keyof SkillEvents>(event: K, data?: SkillEvents[K]): void {
         // Sử dụng custom event để gửi sự kiện
         const customEvent = new CustomEvent(event, { detail: data });
         document.dispatchEvent(customEvent);

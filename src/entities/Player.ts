@@ -31,6 +31,11 @@ export class Player extends Container {
     private direction: number = 1;
     private animations: Map<PlayerState, AnimatedSprite> = new Map();
     
+    // Add getter for currentState
+    public getCurrentState(): PlayerState {
+        return this.currentState;
+    }
+    
     // New properties
     private health: number;
     private maxHealth: number;

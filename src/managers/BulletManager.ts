@@ -240,7 +240,7 @@ export class BulletManager {
     }
     
     // Tạo đạn cho boss
-    createBossBullet(boss: Boss, targetX: number, targetY: number): void {
+    createBossBullet(boss: Boss): void {
         const bossX = boss.x;
         const bossY = boss.y;
         
@@ -263,7 +263,7 @@ export class BulletManager {
             });
         }
     }
-    
+
     // Tạo đạn với các tùy chọn
     private createBullet(options: {
         x: number,
@@ -291,9 +291,9 @@ export class BulletManager {
         this.bullets.push(bullet);
         
         // Xử lý sự kiện khi đạn bị hủy
-        bullet.on('destroyed', (b: any) => {
-            if (b instanceof Bullet) {
-                this.removeBullet(b);
+        bullet.on('destroyed', (container: Container) => {
+            if (container instanceof Bullet) {
+                this.removeBullet(container);
             }
         });
     }

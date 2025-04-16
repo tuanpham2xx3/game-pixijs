@@ -6,12 +6,12 @@
         "scale": "1"
     },
     "frames": {
-        "boss_1.png": { "frame": {"x": 240, "y": 0, "w": 40, "h": 40} },
-        "boss_2.png": { "frame": {"x": 280, "y": 0, "w": 40, "h": 40} },
-        "boss_3.png": { "frame": {"x": 320, "y": 0, "w": 40, "h": 40} },
-        "boss_4.png": { "frame": {"x": 360, "y": 0, "w": 40, "h": 40} }
+        "bullet_boss_1.png": { "frame": {"x": 240, "y": 0, "w": 40, "h": 40} },
+        "bullet_boss_2.png": { "frame": {"x": 280, "y": 0, "w": 40, "h": 40} },
+        "bullet_boss_3.png": { "frame": {"x": 320, "y": 0, "w": 40, "h": 40} },
+        "bullet_boss_4.png": { "frame": {"x": 360, "y": 0, "w": 40, "h": 40} }
     },
     "animations": {
-        "boss": ["boss_1.png", "boss_2.png", "boss_3.png", "boss_4.png"]
+        "bullet_boss": ["bullet_boss_1.png", "bullet_boss_2.png", "bullet_boss_3.png", "bullet_boss_4.png"]
     }
 }
