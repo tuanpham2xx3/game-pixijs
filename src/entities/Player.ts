@@ -98,6 +98,10 @@ export class Player extends Container {
         return this.health <= 0;
     }
 
+    isInvincible(): boolean {
+        return this.isImmune;
+    }
+
     // Override destroy method to clean up timers
     destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean; }): void {
         clearTimeout(this.immunityTimer);

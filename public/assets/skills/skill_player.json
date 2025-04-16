@@ -1,0 +1,19 @@
+{
+    "meta": {
+        "image": "skill_player.png",
+        "format": "RGBA8888",
+        "size": {"w": 400, "h":40},
+        "scale": "1"
+    },
+    "frames": {
+        "skill_player_1.png": { "frame": {"x": 0, "y": 0, "w": 40, "h": 40} },
+        "skill_player_2.png": { "frame": {"x": 40, "y": 0, "w": 40, "h": 40} },
+        "skill_player_3.png": { "frame": {"x": 80, "y": 0, "w": 40, "h": 40} },
+        "skill_player_4.png": { "frame": {"x": 120, "y": 0, "w": 40, "h": 40} },
+        "skill_player_5.png": { "frame": {"x": 160, "y": 0, "w": 40, "h": 40} },
+        "skill_player_6.png": { "frame": {"x": 200, "y": 0, "w": 40, "h": 40} }
+    },
+    "animations": {
+        "skill_player": ["red_player_1.png", "red_player_2.png", "red_player_3.png", "red_player_4.png"]
+    }
+}

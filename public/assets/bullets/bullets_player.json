@@ -1,0 +1,28 @@
+{
+    "meta": {
+        "image": "bullet1.png",
+        "format": "RGBA8888",
+        "size": {"w": 80, "h":80},
+        "scale": "1"
+    },
+    "frames": {
+        "red_player_1.png": { "frame": {"x": 0, "y": 0, "w": 20, "h": 20} },
+        "red_player_2.png": { "frame": {"x": 20, "y": 0, "w": 20, "h": 20} },
+        "red_player_3.png": { "frame": {"x": 40, "y": 0, "w": 20, "h": 20} },
+        "red_player_4.png": { "frame": {"x": 60, "y": 0, "w": 20, "h": 20} },
+        "blue_player_1.png": { "frame": {"x": 0, "y": 20, "w": 20, "h": 20} },
+        "blue_player_2.png": { "frame": {"x": 20, "y": 20, "w": 20, "h": 20} },
+        "blue_player_3.png": { "frame": {"x": 40, "y": 20, "w": 20, "h": 20} },
+        "blue_player_4.png": { "frame": {"x": 60, "y": 20, "w": 20, "h": 20} },
+        "violet_player_1.png": { "frame": {"x": 0, "y": 40, "w": 20, "h": 20} },
+        "violet_player_2.png": { "frame": {"x": 20, "y": 40, "w": 20, "h": 20} },
+        "violet_player_3.png": { "frame": {"x": 40, "y": 40, "w": 20, "h": 20} },
+        "violet_player_4.png": { "frame": {"x": 60, "y": 40, "w": 20, "h": 20} }
+
+    },
+    "animations": {
+        "red_player": ["red_player_1.png", "red_player_2.png", "red_player_3.png", "red_player_4.png"],
+        "blue_player": ["blue_player_1.png", "blue_player_2.png", "blue_player_3.png", "blue_player_4.png"],
+        "violet_player": ["violet_player_1.png", "violet_player_2.png", "violet_player_3.png", "violet_player_4.png"]
+    }
+}

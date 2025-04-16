@@ -1,0 +1,25 @@
+{
+    "meta": {
+        "image": "items.png",
+        "format": "RGBA8888",
+        "size": {"w": 220, "h":20},
+        "scale": "1"
+    },
+    "frames": {
+        "lvup_item_1.png": { "frame": {"x": 0, "y": 0, "w": 20, "h": 20} },
+        "lvup_item_2.png": { "frame": {"x": 20, "y": 0, "w": 20, "h": 20} },
+        "lvup_item_3.png": { "frame": {"x": 40, "y": 0, "w": 20, "h": 20} },
+        "lvup_item_4.png": { "frame": {"x": 80, "y": 0, "w": 20, "h": 20} },
+        "heart_item_1.png": { "frame": {"x": 100, "y": 0, "w": 20, "h": 20} },
+        "heart_item_2.png": { "frame": {"x": 120, "y": 0, "w": 20, "h": 20} },
+        "heart_item_3.png": { "frame": {"x": 140, "y": 0, "w": 20, "h": 20} },
+        "heart_item_4.png": { "frame": {"x": 160, "y": 0, "w": 20, "h": 20} },
+        "heart_item_5.png": { "frame": {"x": 180, "y": 0, "w": 20, "h": 20} },
+        "heart_item_6.png": { "frame": {"x": 200, "y": 0, "w": 20, "h": 20} },
+        "heart_item_7.png": { "frame": {"x": 220, "y": 0, "w": 20, "h": 20} }
+    },
+    "animations": {
+        "lvup_item": ["lvup_item_1","lvup_item_2","lvup_item_3","lvup_item_4"],
+        "heart_item": ["heart_item_1","heart_item_2","heart_item_3","heart_item_4","heart_item_5","heart_item_6","heart_item_7"]
+    }
+}

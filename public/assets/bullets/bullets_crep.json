@@ -1,0 +1,17 @@
+{
+    "meta": {
+        "image": "bullet1.png",
+        "format": "RGBA8888",
+        "size": {"w": 80, "h":80},
+        "scale": "1"
+    },
+    "frames": {
+        "crep_1.png": { "frame": {"x": 0, "y": 60, "w": 20, "h": 20} },
+        "crep_2.png": { "frame": {"x": 20, "y": 60, "w": 20, "h": 20} },
+        "crep_3.png": { "frame": {"x": 40, "y": 60, "w": 20, "h": 20} },
+        "crep_4.png": { "frame": {"x": 60, "y": 60, "w": 20, "h": 20} }
+    },
+    "animations": {
+        "crep": ["crep_1.png", "crep_2.png", "crep_3.png", "crep_4.png"]
+    }
+}
