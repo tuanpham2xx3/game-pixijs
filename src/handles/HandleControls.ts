@@ -20,7 +20,6 @@ export class HandleControls {
       this.keys.delete(e.key.toLowerCase());
     });
 
-    // Game loop xử lý điều khiển
     this.app.ticker.add(() => {
       if (!this.player) return;
 

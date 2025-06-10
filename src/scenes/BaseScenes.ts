@@ -1,19 +1,25 @@
 import * as PIXI from 'pixi.js';
 import { SceneManager } from './SceneManager';
 
-export class BaseScene {
+export abstract class BaseScene {
     protected coordinator: SceneManager;
 
     constructor(coordinator: SceneManager) {
         this.coordinator = coordinator;
     }
 
-    // Phương thức khởi tạo scene (phải được triển khai bởi lớp con)
-    async onStart(_container: PIXI.Container): Promise<void> {}
+    /**
+     * Initialize scene (must be implemented by child classes)
+     */
+    abstract onStart(container: PIXI.Container): Promise<void>;
 
-    // Phương thức cập nhật logic mỗi frame
-    onUpdate(_delta: number): void {}
+    /**
+     * Update logic called every frame
+     */
+    abstract onUpdate(delta: number): void;
 
-    // Phương thức dọn dẹp khi scene kết thúc
-    async onFinish(): Promise<void> {}
+    /**
+     * Cleanup when scene ends
+     */
+    abstract onFinish(): Promise<void>;
 }

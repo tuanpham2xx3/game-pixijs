@@ -12,40 +12,17 @@ export class Game {
     private backgroundManager?: BackgroundManager;
     private gameContainer: Container;
 
-    constructor() {
-      console.log('Game constructor called');
-      this.app = new Application();
+    constructor(app: Application) {
+      this.app = app;
       this.gameContainer = new Container();
     }
 
-
-
-    // Update resize handler
+    /**
+     * Initialize game components and assets
+     */
     async init() {
-      console.log('Game init started');
-      
       try {
-        // Khởi tạo Application trước
-        await this.app.init({
-          width: window.innerWidth,
-          height: window.innerHeight,
-          backgroundColor: 0x000000,
-          antialias: true,
-          resizeTo: window,
-          backgroundAlpha: 0
-        });
-        
-        // Thêm canvas vào DOM
-        document.body.appendChild(this.app.canvas);
-
-        // Thêm gameContainer vào stage
         this.app.stage.addChild(this.gameContainer);
-        
-        // Đảm bảo canvas đã được khởi tạo trước khi tải assets
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        // Load all assets
-        console.log('Loading game assets...');
         
         // Load background assets
         await Promise.all([
@@ -54,7 +31,6 @@ export class Game {
           Assets.load(`${BASE_URL}assets/background/Nebula3.png`),
           Assets.load(`${BASE_URL}assets/background/Stars.png`)
         ]);
-        console.log('Background assets loaded');
         
         // Load player assets
         const playerSheet = await Assets.load(`${BASE_URL}assets/player/player.png`);
@@ -62,39 +38,36 @@ export class Game {
         const playerSpritesheet = new PIXI.Spritesheet(playerSheet, playerData);
         await playerSpritesheet.parse();
         
-        console.log('Player assets loaded');
-        
-        // Tạo player với spritesheet
+        // Create player with spritesheet
         this.player = new Player({
-            x: this.app.screen.width / 2,
-            y: this.app.screen.height / 2,
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
             scale: 1,
             spritesheet: playerSpritesheet
         });
 
-        // Khởi tạo background
+        // Initialize background manager
         this.backgroundManager = new BackgroundManager(this.app, this.player);
-        this.gameContainer.addChildAt(this.backgroundManager, 0); // Add at index 0 to ensure it's behind other elements
-        console.log('Background initialized');
+        this.gameContainer.addChildAt(this.backgroundManager, 0);
 
-        // Thêm player vào gameContainer
+        // Add player to game container
         this.gameContainer.addChild(this.player);
-        console.log('Player added to gameContainer');
 
-        // Thiết lập controls
+        // Ensure player is immediately visible in IDLE state
+        this.player.idle();
+
+        // Setup controls
         this.controls = new HandleControls(this.app, this.player);
         this.controls.setupControls();
-        console.log('Controls setup complete');
 
-        // Xử lý resize window
+        // Handle window resize
         window.addEventListener('resize', () => {
-            // BackgroundManager tự động xử lý resize
+            // BackgroundManager handles resize automatically
         });
 
-        console.log('Game initialization complete');
       } catch (error) {
-        console.error('Lỗi khởi tạo game:', error);
-        throw error; // Ném lỗi để GameplayScene có thể bắt được
+        console.error('Game initialization failed:', error);
+        throw error;
       }
     }
 

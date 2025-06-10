@@ -1,4 +1,3 @@
-
 import * as PIXI from 'pixi.js';
 
 export class SceneManager {
@@ -12,8 +11,8 @@ export class SceneManager {
         this.gameContainer = new PIXI.Container();
         app.stage.addChild(this.gameContainer);
         
-        // Thiết lập căn giữa cho container
-        this.gameContainer.position.set(app.screen.width / 2, app.screen.height / 2);
+        // Thiết lập căn giữa cho container - use window dimensions instead of app.screen
+        this.gameContainer.position.set(window.innerWidth / 2, window.innerHeight / 2);
         
         // Thêm sự kiện resize
         window.addEventListener('resize', this.handleResize.bind(this));

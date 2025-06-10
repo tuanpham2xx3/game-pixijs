@@ -31,12 +31,10 @@ export class Player extends Container {
     private direction: number = 1;
     private animations: Map<PlayerState, AnimatedSprite> = new Map();
     
-    // Add getter for currentState
     public getCurrentState(): PlayerState {
         return this.currentState;
     }
     
-    // New properties
     private health: number;
     private maxHealth: number;
     private level: number;
@@ -51,7 +49,6 @@ export class Player extends Container {
         this.y = options.y || 0;
         this.scale.set(options.scale || 1);
         
-        // Initialize health and level
         this.maxHealth = options.maxHealth || 3;
         this.health = this.maxHealth;
         this.level = options.initialLevel || 1;
@@ -61,12 +58,11 @@ export class Player extends Container {
         }
     }
 
-    // Add new methods for game logic
     takeDamage(): void {
         if (this.isImmune) return;
         
         this.health--;
-        this.level = Math.max(1, this.level - 1); // Decrease level but not below 1
+        this.level = Math.max(1, this.level - 1);
         
         if (this.health > 0) {
             this.setState(PlayerState.DESTROY);
@@ -107,7 +103,6 @@ export class Player extends Container {
         return this.isImmune;
     }
 
-    // Override destroy method to clean up timers
     destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean; }): void {
         clearTimeout(this.immunityTimer);
         for (const anim of this.animations.values()) {
@@ -116,11 +111,11 @@ export class Player extends Container {
         super.destroy(options);
     }
 
-    // LOAD DATASHEET
+    /**
+     * Initialize player animations from spritesheet
+     */
     initialize(spritesheet: Spritesheet): void {
-        // Create default texture array for each state
         for (const state of Object.values(PlayerState)) {
-            // Use animations from spritesheet directly
             if (spritesheet.animations[state]) {
                 const animatedSprite = new AnimatedSprite(spritesheet.animations[state]);
                 animatedSprite.anchor.set(0.5);
@@ -134,21 +129,19 @@ export class Player extends Container {
             }
         }
 
-        // Set initial state
         this.setState(PlayerState.IDLE);
     }
-    // Thay đổi trạng thái Player
+
+    /**
+     * Change player state and animation
+     */
     setState(newState: PlayerState): void {
-        if (this.currentState === newState) return;
-        
-        // Dừng animation hiện tại
         const currentAnim = this.animations.get(this.currentState);
         if (currentAnim) {
             currentAnim.stop();
             currentAnim.visible = false;
         }
 
-        // Kích hoạt animation mới
         const newAnim = this.animations.get(newState);
         if (newAnim) {
             newAnim.scale.x = Math.abs(newAnim.scale.x) * this.direction;
@@ -159,15 +152,7 @@ export class Player extends Container {
         this.currentState = newState;
     }
 
-    //dọn dẹp khi không dùng
-    // destroy(options?: { children?: boolean; texture?: boolean; baseTexture?: boolean; }): void {
-    //     for (const anim of this.animations.values()) {
-    //         anim.stop();
-    //     }
-    //     super.destroy(options);
-    // }
-
-    // Thêm các phương thức di chuyển
+    // Movement methods
     moveRight(): void {
         this.x += 2;
         this.setState(PlayerState.RIGHT);
@@ -212,8 +197,16 @@ export class Player extends Container {
         this.setState(PlayerState.DOWN_LEFT);
     }
 
-    // Dừng di chuyển
+    /**
+     * Set player to idle state
+     */
     idle(): void {
         this.setState(PlayerState.IDLE);
+        // Ensure IDLE animation is immediately visible
+        const idleAnim = this.animations.get(PlayerState.IDLE);
+        if (idleAnim) {
+            idleAnim.visible = true;
+            idleAnim.gotoAndPlay(0);
+        }
     }
 }

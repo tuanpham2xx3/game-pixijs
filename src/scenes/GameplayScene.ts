@@ -8,30 +8,23 @@ export class GameplayScene extends BaseScene {
 
     async onStart(container: PIXI.Container): Promise<void> {
         this.container = container;
-        console.log('Gameplay Scene đang tải.');
-        // Tạo instance của Game
-        this.game = new Game();
         
-        // Khởi tạo game
+        const app = this.coordinator.getApp();
+        
+        this.game = new Game(app);
         await this.game.init();
         
-        // Thêm container của game vào container của scene
         this.container.addChild(this.game.getContainer());
-        
-        console.log('Gameplay Scene tải xong.');
     }
 
     onUpdate(_deltaTime: number): void {
-        // Game đã có ticker riêng nên không cần gọi update ở đây
+        // Game has its own ticker, no update needed here
     }
 
     async onFinish(): Promise<void> {
-        // Dọn dẹp game
         if (this.game) {
             this.game = undefined;
         }
-        
-        console.log('Gameplay Scene kết thúc.');
     }
 }
 

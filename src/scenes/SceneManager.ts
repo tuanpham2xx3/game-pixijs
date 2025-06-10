@@ -3,58 +3,47 @@ import { BaseScene } from './BaseScenes';
 
 export class SceneManager {
     private app: PIXI.Application;
-    private currentScene: BaseScene | null = null;
-    private isTransitioning: boolean = false;
+    private currentScene?: BaseScene;
+    private sceneContainer: PIXI.Container;
 
     constructor(app: PIXI.Application) {
         this.app = app;
-        // Add ticker directly since app is already initialized
-        const boundUpdate = (delta: number) => {
-            if (this.currentScene && !this.isTransitioning) {
-                this.currentScene.onUpdate(delta);
-            }
-        };
-        app.ticker?.add((ticker) => boundUpdate(ticker.deltaTime));
+        this.sceneContainer = new PIXI.Container();
+        
+        this.sceneContainer.x = 0;
+        this.sceneContainer.y = 0;
+
+        this.app.stage.addChild(this.sceneContainer);
+        
+        window.addEventListener('resize', () => {
+            this.handleResize();
+        });
     }
 
-    // Remove initTicker method since we don't need it anymore
-    // Remove requestAnimationFrame from update method
-    update(delta: number): void {
-        if (this.currentScene && !this.isTransitioning) {
-            this.currentScene.onUpdate(delta);
+    private handleResize(): void {
+        this.app.renderer.resize(window.innerWidth, window.innerHeight);
+        
+        this.sceneContainer.x = 0;
+        this.sceneContainer.y = 0;
+    }
+
+    async gotoScene(newScene: BaseScene): Promise<void> {
+        if (this.currentScene) {
+            await this.currentScene.onFinish();
+            this.sceneContainer.removeChildren();
+        }
+
+        this.currentScene = newScene;
+        await this.currentScene.onStart(this.sceneContainer);
+    }
+
+    update(deltaTime: number): void {
+        if (this.currentScene) {
+            this.currentScene.onUpdate(deltaTime);
         }
     }
 
     getApp(): PIXI.Application {
         return this.app;
-    }
-
-    async gotoScene(newScene: BaseScene): Promise<void> {
-        if (this.isTransitioning) return;
-        this.isTransitioning = true;
-
-        try {
-            if (this.currentScene) {
-                await this.currentScene.onFinish();
-                this.app.stage.removeChildren();
-            }
-
-            const container = new PIXI.Container();
-            this.app.stage.addChild(container);
-            this.currentScene = newScene;
-            
-            // Start scene immediately
-            await newScene.onStart(container);
-            // Force first update
-            this.currentScene.onUpdate(0);
-        } catch (error) {
-            console.error('Scene transition error:', error);
-        } finally {
-            this.isTransitioning = false;
-        }
-    }
-
-    getGameContainer() {
-        return this.app.stage;
     }
 }

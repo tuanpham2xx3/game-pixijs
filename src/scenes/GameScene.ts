@@ -11,26 +11,22 @@ export class GameScene extends Container {
         super();
         this.app = app;
 
-        // Khởi tạo player
         this.player = new Player({
-            x: this.app.screen.width / 2,
-            y: this.app.screen.height * 0.8,
+            x: window.innerWidth / 2,
+            y: window.innerHeight * 0.8,
             scale: 1
         });
 
-        // Khởi tạo background manager
         this.backgroundManager = new BackgroundManager(this.app, this.player);
 
-        // Thêm các layer theo thứ tự
         this.addChild(this.backgroundManager);
         this.addChild(this.player);
 
-        // Bắt đầu game loop
         this.app.ticker.add(this.update, this);
     }
 
     private update = (_ticker: Ticker): void => {
-        // Cập nhật logic game ở đây
+        // Update game logic here
     }
 
     public destroy(): void {

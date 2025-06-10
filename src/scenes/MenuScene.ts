@@ -3,53 +3,62 @@ import {BaseScene} from './BaseScenes';
 import {GameplayScene} from './GameplayScene';
 
 export class MenuScene extends BaseScene {
+    private titleText?: PIXI.Text;
+    private startButton?: PIXI.Text;
+
     async onStart(container: PIXI.Container): Promise<void> {
-        console.log('Menu Scene started');
-        // Lấy kích thước màn hình từ application
         const app = this.coordinator.getApp();
-        const appWidth = app.screen.width;
-        const appHeight = app.screen.height;
-        const titleText = new PIXI.Text({
-            text: 'Menu',
-            style: {
-                fontSize: 50 ,
-                fill:0xffffff
-            }
-        });
-        // Đặt điểm neo ở giữa text để căn giữa
-        titleText.anchor.set(0.5);
-        // Sử dụng kích thước màn hình từ app
-        titleText.x = appWidth / 2;
-        titleText.y = appHeight / 3;
+        const appWidth = window.innerWidth;
+        const appHeight = window.innerHeight;
 
-        const startButton = new PIXI.Text({
-            text: 'Start Game',
-            style: {
-                fontSize: 50 ,
-                fill:0xffffff
-            }
+        this.titleText = new PIXI.Text('Menu', {
+            fontSize: 50,
+            fill: 0xffffff
         });
-        // Đặt điểm neo ở giữa text để căn giữa
-        startButton.anchor.set(0.5);
-        // Sử dụng kích thước màn hình từ app
-        startButton.x = appWidth / 2;
-        startButton.y = appHeight / 2;
-        startButton.interactive = true;
-        startButton.cursor = 'pointer';
+        this.titleText.anchor.set(0.5);
+        this.titleText.x = appWidth / 2;
+        this.titleText.y = appHeight / 3;
 
-        startButton.on('pointerup', () => {
-            console.log('Start button clicked');
+        this.startButton = new PIXI.Text('Start Game', {
+            fontSize: 50,
+            fill: 0xffffff
+        });
+        this.startButton.anchor.set(0.5);
+        this.startButton.x = appWidth / 2;
+        this.startButton.y = appHeight / 2;
+        this.startButton.interactive = true;
+        this.startButton.cursor = 'pointer';
+
+        this.startButton.on('pointerup', () => {
             this.coordinator.gotoScene(new GameplayScene(this.coordinator));
         });
-        container.addChild(titleText);
-        container.addChild(startButton);
-        console.log('Menu Scene setup complete');
+
+        container.addChild(this.titleText);
+        container.addChild(this.startButton);
+
+        // Handle resize
+        window.addEventListener('resize', this.handleResize);
     }
+
+    private handleResize = () => {
+        if (this.titleText && this.startButton) {
+            const appWidth = window.innerWidth;
+            const appHeight = window.innerHeight;
+            
+            this.titleText.x = appWidth / 2;
+            this.titleText.y = appHeight / 3;
+            
+            this.startButton.x = appWidth / 2;
+            this.startButton.y = appHeight / 2;
+        }
+    }
+
     onUpdate(_delta: number): void {
-        // Không cần cập nhật gì cho menu
+        // No update needed for menu
     }
 
     async onFinish(): Promise<void> {
-        console.log('Menu Scene kết thúc.');
+        // Remove resize listener
+        window.removeEventListener('resize', this.handleResize);
     }
 }

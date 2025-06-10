@@ -21,8 +21,8 @@ export class BackgroundManager extends Container {
         // Tạo nền đen
         const background = new Sprite(Texture.WHITE);
         background.tint = 0x000000;
-        background.width = app.screen.width;
-        background.height = app.screen.height;
+        background.width = window.innerWidth;
+        background.height = window.innerHeight;
         this.addChild(background);
 
         // Khởi tạo các sprite
@@ -44,8 +44,8 @@ export class BackgroundManager extends Container {
             const texture = nebulaTextures[Math.floor(Math.random() * nebulaTextures.length)];
             const nebula = new Sprite(texture);
             nebula.alpha = 0.3;
-            nebula.x = Math.random() * this.app.screen.width;
-            nebula.y = Math.random() * this.app.screen.height;
+            nebula.x = Math.random() * window.innerWidth;
+            nebula.y = Math.random() * window.innerHeight;
             nebula.scale.set(Math.random() * 0.2 + 0.2); // Giảm kích thước để tạo hiệu ứng xa
             this.nebulas.push(nebula);
             this.addChild(nebula);
@@ -57,8 +57,8 @@ export class BackgroundManager extends Container {
 
         for (let i = 0; i < this.MAX_STARS; i++) {
             const star = new Sprite(starTexture);
-            star.x = Math.random() * this.app.screen.width;
-            star.y = Math.random() * this.app.screen.height;
+            star.x = Math.random() * window.innerWidth;
+            star.y = Math.random() * window.innerHeight;
             star.scale.set(Math.random() * 0.3 + 0.2);
             star.alpha = Math.random() * 0.5 + 0.5;
             this.stars.push(star);
@@ -81,9 +81,9 @@ export class BackgroundManager extends Container {
             star.y += this.currentStarSpeed;
 
             // Reset vị trí khi sao đi ra khỏi màn hình
-            if (star.y > this.app.screen.height) {
+            if (star.y > window.innerHeight) {
                 star.y = -star.height;
-                star.x = Math.random() * this.app.screen.width;
+                star.x = Math.random() * window.innerWidth;
             }
         }
 
@@ -92,9 +92,9 @@ export class BackgroundManager extends Container {
             nebula.y += this.currentStarSpeed * 0.1;
 
             // Reset vị trí khi tinh vân đi ra khỏi màn hình
-            if (nebula.y > this.app.screen.height) {
+            if (nebula.y > window.innerHeight) {
                 nebula.y = -nebula.height;
-                nebula.x = Math.random() * this.app.screen.width;
+                nebula.x = Math.random() * window.innerWidth;
                 nebula.scale.set(Math.random() * 0.5 + 0.5);
             }
         }
