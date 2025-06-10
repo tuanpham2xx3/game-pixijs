@@ -7,7 +7,6 @@ export class MenuScene extends BaseScene {
     private startButton?: PIXI.Text;
 
     async onStart(container: PIXI.Container): Promise<void> {
-        const app = this.coordinator.getApp();
         const appWidth = window.innerWidth;
         const appHeight = window.innerHeight;
 
