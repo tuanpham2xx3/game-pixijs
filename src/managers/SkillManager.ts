@@ -3,14 +3,8 @@ import { Player } from "../entities/Player";
 import { Enemy } from "../entities/Enemy";
 import { Boss } from "../entities/Boss";
 
-interface SkillEvents {
-    playerSkillUsed: number; // cooldown time
-    skillReady: void;
-    skillCooldownUpdate: number; // remaining cooldown time
-}
-
-export class SkillManager {
-    private container: Container;
+export class SkillManager extends Container {
+    private gameContainer: Container;
     private player: Player;
     private app: Application;
     private skillTexture: Texture | null = null;
@@ -23,8 +17,9 @@ export class SkillManager {
     private readonly BASE_URL = import.meta.env.BASE_URL || '';
     
     constructor(app: Application, container: Container, player: Player) {
+        super();
         this.app = app;
-        this.container = container;
+        this.gameContainer = container;
         this.player = player;
     }
     
@@ -71,9 +66,6 @@ export class SkillManager {
         this.isSkillReady = false;
         this.skillTimer = this.skillCooldown;
         
-        // Emit sự kiện kỹ năng đã được sử dụng
-        this.emit('playerSkillUsed', this.skillCooldown);
-        
         return true;
     }
     
@@ -100,7 +92,7 @@ export class SkillManager {
         this.skillSprite.alpha = 0.8;
         
         // Thêm vào container
-        this.container.addChild(this.skillSprite);
+        this.gameContainer.addChild(this.skillSprite);
         
         // Animation hiệu ứng
         const duration = 500; // 0.5 giây
@@ -147,7 +139,7 @@ export class SkillManager {
         sprite.alpha = 0.8;
         
         // Thêm vào container
-        this.container.addChild(sprite);
+        this.gameContainer.addChild(sprite);
         
         // Animation hiệu ứng
         const duration = 1000; // 1 giây
@@ -196,10 +188,6 @@ export class SkillManager {
             
             if (this.skillTimer <= 0) {
                 this.isSkillReady = true;
-                this.emit('skillReady');
-            } else {
-                // Emit sự kiện cập nhật cooldown
-                this.emit('skillCooldownUpdate', this.skillTimer);
             }
         }
     }
@@ -217,12 +205,5 @@ export class SkillManager {
     // Lấy thời gian cooldown tối đa
     getMaxCooldown(): number {
         return this.skillCooldown;
-    }
-    
-    // Phương thức emit sự kiện
-    private emit<K extends keyof SkillEvents>(event: K, data?: SkillEvents[K]): void {
-        // Sử dụng custom event để gửi sự kiện
-        const customEvent = new CustomEvent(event, { detail: data });
-        document.dispatchEvent(customEvent);
     }
 }

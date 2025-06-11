@@ -51,7 +51,9 @@ export class CollisionManager extends Container {
     }
     
     // Kiểm tra va chạm giữa người chơi và item
-    checkItemCollisions(items: Item[]): void {
+    checkItemCollisions(items: Item[]): Item[] {
+        const collectedItems: Item[] = [];
+        
         for (const item of items) {
             // Bỏ qua item đã được thu thập
             if (item.isCollected()) continue;
@@ -71,8 +73,11 @@ export class CollisionManager extends Container {
                 
                 // Đánh dấu item đã được thu thập
                 item.collect();
+                collectedItems.push(item);
             }
         }
+        
+        return collectedItems;
     }
     
     // Kiểm tra va chạm giữa người chơi và kỹ năng của boss

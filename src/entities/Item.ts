@@ -2,7 +2,9 @@ import { Container, Sprite, Texture } from "pixi.js";
 
 export enum ItemType {
     HEART = 'heart',
-    LEVEL_UP = 'level_up'
+    LEVEL_UP = 'level_up',
+    BLUE_ITEM = 'blue_item',
+    VIOLET_ITEM = 'violet_item'
 }
 
 interface ItemOptions {

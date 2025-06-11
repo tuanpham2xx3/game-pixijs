@@ -1,36 +1,53 @@
-import { Container, Texture, Assets } from "pixi.js";
+import { Container, Texture, Assets, Spritesheet } from "pixi.js";
 import { Bullet, BulletType, BulletLevel } from "../entities/Bullet";
 import { Player } from "../entities/Player";
 import { Enemy } from "../entities/Enemy";
 import { Boss } from "../entities/Boss";
 
+export enum PlayerBulletColor {
+    RED = 'red',
+    BLUE = 'blue', 
+    VIOLET = 'violet'
+}
+
 export class BulletManager {
     private container: Container;
     private bullets: Bullet[] = [];
     private bulletTextures: Map<string, Texture> = new Map();
+    private playerBulletSpritesheet?: Spritesheet;
+    private currentPlayerBulletColor: PlayerBulletColor = PlayerBulletColor.RED;
     private readonly BASE_URL = import.meta.env.BASE_URL || '';
     
     constructor(container: Container) {
         this.container = container;
     }
     
-    // Tải texture cho đạn
+    // Tải texture cho đạn từ spritesheet
     async loadTextures(): Promise<void> {
         try {
-            // Tải texture cho các loại đạn
-            const playerBulletTexture = await Assets.load(`${this.BASE_URL}assets/bullets/player_bullet.png`);
-            const enemyBulletTexture = await Assets.load(`${this.BASE_URL}assets/bullets/enemy_bullet.png`);
-            const bossBulletTexture = await Assets.load(`${this.BASE_URL}assets/bullets/boss_bullet.png`);
+            console.log('Loading bullet textures...');
             
-            // Lưu texture vào map
-            this.bulletTextures.set('player', playerBulletTexture);
-            this.bulletTextures.set('enemy', enemyBulletTexture);
-            this.bulletTextures.set('boss', bossBulletTexture);
+            // Tải player bullet spritesheet
+            const playerBulletSheet = await Assets.load(`${this.BASE_URL}assets/bullets/bullet1.png`);
+            const playerBulletData = await fetch(`${this.BASE_URL}assets/bullets/bullets_player.json`).then(res => res.json());
             
-            // Tải texture cho các cấp độ đạn của người chơi
-            for (let i = 1; i <= 6; i++) {
-                const levelTexture = await Assets.load(`${this.BASE_URL}assets/bullets/player_level${i}.png`);
-                this.bulletTextures.set(`player_level${i}`, levelTexture);
+            this.playerBulletSpritesheet = new Spritesheet(playerBulletSheet, playerBulletData);
+            await this.playerBulletSpritesheet.parse();
+            
+            console.log('Player bullet spritesheet loaded:', Object.keys(this.playerBulletSpritesheet.textures));
+            
+            // Lưu textures của red bullets (mặc định)
+            this.loadPlayerBulletTextures(PlayerBulletColor.RED);
+            
+            // Tải texture cho enemy và boss bullets (fallback)
+            try {
+                const enemyBulletTexture = await Assets.load(`${this.BASE_URL}assets/bullets/enemy_bullet.png`);
+                const bossBulletTexture = await Assets.load(`${this.BASE_URL}assets/bullets/boss_bullet.png`);
+                
+                this.bulletTextures.set('enemy', enemyBulletTexture);
+                this.bulletTextures.set('boss', bossBulletTexture);
+            } catch {
+                console.warn('Enemy/Boss bullet textures not found, using defaults');
             }
             
             console.log('Bullet textures loaded successfully');
@@ -40,15 +57,89 @@ export class BulletManager {
         }
     }
     
+    // Load textures cho player bullets theo màu
+    private loadPlayerBulletTextures(color: PlayerBulletColor): void {
+        if (!this.playerBulletSpritesheet) return;
+        
+        // Lưu texture cho từng loại đạn của player từ animations
+        const animations = this.playerBulletSpritesheet.data?.animations;
+        const textures = this.playerBulletSpritesheet.textures;
+        
+        if (!animations || !textures) {
+            console.error('No animations or textures found in spritesheet');
+            return;
+        }
+        
+        // Tìm animation tương ứng với màu (red_player, blue_player, violet_player)
+        const animationKey = `${color}_player`;
+        const animationFrames = animations[animationKey];
+        
+        if (animationFrames && animationFrames.length > 0) {
+            // Sử dụng frame đầu tiên làm texture chính
+            const firstFrameName = animationFrames[0];
+            const firstTexture = textures[firstFrameName];
+            
+            if (firstTexture) {
+                // Lưu texture chính cho player
+                this.bulletTextures.set('player', firstTexture);
+                this.bulletTextures.set('player_level1', firstTexture);
+                
+                // Lưu tất cả frames cho các level khác nhau
+                animationFrames.forEach((frameName: string, index: number) => {
+                    const texture = textures[frameName];
+                    if (texture) {
+                        this.bulletTextures.set(`${color}_level${index + 1}`, texture);
+                        this.bulletTextures.set(`player_level${index + 1}`, texture);
+                    }
+                });
+                
+                console.log(`Loaded ${color} bullet textures:`, animationFrames);
+            } else {
+                console.error(`Texture not found for frame: ${firstFrameName}`);
+            }
+        } else {
+            console.error(`Animation not found for: ${animationKey}`);
+            
+            // Fallback: tìm texture với prefix
+            const fallbackTexture = Object.entries(textures).find(([name]) => 
+                name.toLowerCase().includes(color)
+            );
+            
+            if (fallbackTexture) {
+                this.bulletTextures.set('player', fallbackTexture[1]);
+                this.bulletTextures.set('player_level1', fallbackTexture[1]);
+                console.log(`Using fallback texture for ${color}: ${fallbackTexture[0]}`);
+            }
+        }
+    }
+    
+    // Thay đổi màu đạn của player
+    changePlayerBulletColor(color: PlayerBulletColor): void {
+        if (color !== this.currentPlayerBulletColor) {
+            this.currentPlayerBulletColor = color;
+            this.loadPlayerBulletTextures(color);
+            console.log(`Player bullet color changed to: ${color}`);
+        }
+    }
+    
+    // Lấy màu đạn hiện tại của player
+    getCurrentPlayerBulletColor(): PlayerBulletColor {
+        return this.currentPlayerBulletColor;
+    }
+    
     // Tạo đạn cho người chơi dựa trên cấp độ
     createPlayerBullets(player: Player): void {
         const playerLevel = player.getCurrentLevel();
         const playerX = player.x;
         const playerY = player.y;
         
-        // Lấy texture tương ứng với cấp độ đạn
-        const textureKey = `player_level${playerLevel}`;
-        const texture = this.bulletTextures.get(textureKey) || this.bulletTextures.get('player');
+        // Lấy texture tương ứng với màu và cấp độ đạn hiện tại  
+        let texture = this.bulletTextures.get(`player_level${playerLevel}`);
+        
+        // Fallback: nếu không có texture cho level cụ thể, dùng texture cơ bản
+        if (!texture) {
+            texture = this.bulletTextures.get('player');
+        }
         
         // Tạo đạn dựa trên cấp độ
         switch (playerLevel) {
@@ -210,6 +301,18 @@ export class BulletManager {
                     angle: -60, // Góc phải mạnh
                     type: BulletType.PLAYER,
                     level: BulletLevel.LEVEL6,
+                    texture
+                });
+                break;
+                
+            default:
+                // Fallback cho level > 6
+                this.createBullet({
+                    x: playerX,
+                    y: playerY - 20,
+                    angle: -90,
+                    type: BulletType.PLAYER,
+                    level: BulletLevel.LEVEL1,
                     texture
                 });
                 break;

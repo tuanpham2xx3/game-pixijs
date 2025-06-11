@@ -39,8 +39,8 @@ interface BossData {
     attackCooldown?: number;
 }
 
-export class LevelManager {
-    private container: Container;
+export class LevelManager extends Container {
+    private gameContainer: Container;
     private levels: LevelData[] = [];
     private currentLevel: number = 1;
     private enemies: Enemy[] = [];
@@ -49,7 +49,8 @@ export class LevelManager {
     private readonly BASE_URL = import.meta.env.BASE_URL || '';
     
     constructor(container: Container) {
-        this.container = container;
+        super();
+        this.gameContainer = container;
     }
     
     // Tải dữ liệu các cấp độ từ file JSON
@@ -139,7 +140,7 @@ export class LevelManager {
             });
             
             // Thêm crep vào container và mảng quản lý
-            this.container.addChild(crep);
+            this.gameContainer.addChild(crep);
             this.enemies.push(crep);
             
             // Bắt đầu di chuyển
@@ -171,7 +172,7 @@ export class LevelManager {
             });
             
             // Thêm boss vào container và mảng quản lý
-            this.container.addChild(this.boss);
+            this.gameContainer.addChild(this.boss);
             this.enemies.push(this.boss);
             
             // Xử lý sự kiện khi boss bị tiêu diệt
@@ -235,7 +236,7 @@ export class LevelManager {
         const index = this.enemies.indexOf(enemy);
         if (index !== -1) {
             this.enemies.splice(index, 1);
-            this.container.removeChild(enemy);
+            this.gameContainer.removeChild(enemy);
             enemy.destroy();
         }
     }
@@ -269,12 +270,5 @@ export class LevelManager {
     // Kiểm tra xem đã hoàn thành cấp độ chưa
     isLevelCompleted(): boolean {
         return this.isLevelComplete;
-    }
-    
-    // Phương thức emit sự kiện
-    private emit(event: string, data?: unknown): void {
-        // Sử dụng custom event để gửi sự kiện
-        const customEvent = new CustomEvent(event, { detail: data });
-        document.dispatchEvent(customEvent);
     }
 }
